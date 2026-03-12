@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Background -->
+  <rect width="128" height="128" fill="#f0f0f0"/>
+  
+  <!-- Light bulb shape of icon -->
+  <g transform="translate(64, 64)">
+    <!-- Bulb circle -->
+    <circle cx="0" cy="-15" r="20" fill="#FFD700" stroke="#FFA500" stroke-width="2"/>
+    
+    <!-- Filament -->
+    <path d="M -5 -5 Q -10 0 -5 5 Q 5 10 5 5" fill="none" stroke="#FF8C00" stroke-width="1.5"/>
+    
+    <!-- Base of bulb -->
+    <rect x="-8" y="15" width="16" height="6" fill="#FF8C00"/>
+    
+    <!-- Threads -->
+    <line x1="-8" y1="21" x2="8" y2="21" stroke="#999" stroke-width="1"/>
+    <line x1="-8" y1="24" x2="8" y2="24" stroke="#999" stroke-width="1"/>
+    
+    <!-- Socket -->
+    <rect x="-6" y="26" width="12" height="10" fill="#888" rx="1"/>
+    <circle cx="-2" cy="31" r="1" fill="#333"/>
+    <circle cx="2" cy="31" r="1" fill="#333"/>
+  </g>
+</svg>

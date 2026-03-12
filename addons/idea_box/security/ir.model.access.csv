@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_idea_box_user_read,idea.box.user.read,model_idea_box,idea_box.group_idea_box_user,1,0,1,0
+access_idea_box_user_write_own,idea.box.user.write,model_idea_box,idea_box.group_idea_box_user,1,1,0,0
+access_idea_box_user_approved_read,idea.box.user.approved,model_idea_box,idea_box.group_idea_box_user,1,0,0,0
+access_idea_box_manager_full,idea.box.manager.full,model_idea_box,idea_box.group_idea_box_manager,1,1,1,1

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_idea_list" model="ir.ui.view">
+            <field name="name">idea.box.list</field>
+            <field name="model">idea.box</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="create_uid"/>
+                    <field name="state" widget="badge" 
+                           decoration-info="state == 'draft'"
+                           decoration-warning="state == 'submitted'"
+                           decoration-success="state == 'approved'"
+                           decoration-danger="state == 'rejected'"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_idea_approved_list" model="ir.ui.view">
+            <field name="name">idea.box.approved.list</field>
+            <field name="model">idea.box</field>
+            <field name="arch" type="xml">
+                <list editable="top">
+                    <field name="name"/>
+                    <field name="create_uid"/>
+                    <field name="approver_id"/>
+                    <field name="approved_date"/>
+                    <field name="description"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_idea_pending_list" model="ir.ui.view">
+            <field name="name">idea.box.pending.list</field>
+            <field name="model">idea.box</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="create_uid"/>
+                    <field name="submitted_date"/>
+                    <field name="description"/>
+                    <field name="state" widget="badge" 
+                           decoration-warning="state == 'submitted'"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_idea_form" model="ir.ui.view">
+            <field name="name">idea.box.form</field>
+            <field name="model">idea.box</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="submit" string="Gửi duyệt" type="object" class="oe_highlight" invisible="state != 'draft'" groups="idea_box.group_idea_box_user"/>
+                        <button name="approve" string="Duyệt" type="object" class="oe_highlight" invisible="state != 'submitted'" groups="idea_box.group_idea_box_manager"/>
+                        <button name="reject" string="Từ chối" type="object" invisible="state != 'submitted'" groups="idea_box.group_idea_box_manager"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name" placeholder="Tiêu đề ý tưởng..."/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="create_uid"/>
+                                <field name="approver_id"/>
+                            </group>
+                            <group>
+                                <field name="submitted_date"/>
+                                <field name="approved_date"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description"/>
+                            <field name="approval_notes"/>
+                            <field name="rejection_reason"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_idea_kanban" model="ir.ui.view">
+            <field name="name">idea.box.kanban</field>
+            <field name="model">idea.box</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="state"/>
+                    <field name="create_uid"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="oe_kanban_content">
+                                    <strong><t t-esc="record.name.value"/></strong>
+                                    <br/>
+                                    <small>By: <t t-esc="record.create_uid.value"/></small>
+                                    <br/>
+                                    <span class="badge" t-attf-class="badge-{{ 'info' if record.state.value == 'draft' else 'warning' if record.state.value == 'submitted' else 'success' if record.state.value == 'approved' else 'danger' }}">
+                                        <t t-esc="record.state.value"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="action_idea_box" model="ir.actions.act_window">
+            <field name="name">Idea Box</field>
+            <field name="res_model">idea.box</field>
+            <field name="view_mode">form,list,kanban</field>
+        </record>
+
+        <record id="action_idea_approved_list" model="ir.actions.act_window">
+            <field name="name">Danh sách ý tưởng được duyệt</field>
+            <field name="res_model">idea.box</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('state', '=', 'approved')]</field>
+            <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'list', 'view_id': ref('view_idea_approved_list')}), (0, 0, {'view_mode': 'form', 'view_id': ref('view_idea_form')})]"/>
+        </record>
+
+        <record id="action_idea_pending_list" model="ir.actions.act_window">
+            <field name="name">Danh sách chờ duyệt</field>
+            <field name="res_model">idea.box</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('state', '=', 'submitted')]</field>
+            <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'list', 'view_id': ref('view_idea_pending_list')}), (0, 0, {'view_mode': 'form', 'view_id': ref('view_idea_form')})]"/>
+        </record>
+
+        <menuitem id="idea_box_menu_root" name="Idea Box" sequence="10"/>
+        
+        <menuitem id="idea_box_menu_list" name="Danh sách ý tưởng" parent="idea_box_menu_root" action="action_idea_box" sequence="10"/>
+
+        <menuitem id="idea_box_menu_pending" name="Danh sách chờ duyệt" parent="idea_box_menu_root" action="action_idea_pending_list" sequence="15"/>
+
+        <menuitem id="idea_box_menu_approved" name="Danh sách được duyệt" parent="idea_box_menu_root" action="action_idea_approved_list" sequence="20"/>
+        
+        <menuitem id="menu_idea_box_users" name="Người dùng" parent="idea_box_menu_root" action="base.action_res_users" groups="idea_box.group_idea_box_manager" sequence="30"/>
+    </data>
+</odoo>
